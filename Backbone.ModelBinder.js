@@ -108,6 +108,7 @@
                     var attributeBinding =  {attributeName: name};
                     attributeBinding.elementBindings = [{attributeBinding: attributeBinding, boundEls: [namedEl]}];
                     this._attributeBindings[name] = attributeBinding;
+                    this._setModel(attributeBinding.elementBindings[0], $(namedEl));
                 }
                 else{
                     this._attributeBindings[name].elementBindings.push({attributeBinding: this._attributeBindings[name], boundEls: [namedEl]});
@@ -344,6 +345,13 @@
             var data = {};
             var elVal = this._getElValue(elementBinding, el);
             elVal = this._getConvertedValue(Backbone.ModelBinder.Constants.ViewToModel, elementBinding, elVal);
+            var type = $(el).attr('type');
+            if (type != undefined && type === 'number') {
+                var r = parseFloat(elVal);
+                if (r != undefined && !isNaN(r)) elVal = r;
+            } else if (type === 'checkbox') {
+                elVal = (elVal === 'on' || elVal === true || elVal === 'true');
+            }
             data[elementBinding.attributeBinding.attributeName] = elVal;
             this._model.set(data, {changeSource: 'ModelBinder'});
         },
