@@ -108,7 +108,10 @@
                     var attributeBinding =  {attributeName: name};
                     attributeBinding.elementBindings = [{attributeBinding: attributeBinding, boundEls: [namedEl]}];
                     this._attributeBindings[name] = attributeBinding;
-                    this._setModel(attributeBinding.elementBindings[0], $(namedEl));
+                    //ADDED BY UPP.
+                    if (!this._model.has(name)) {
+                        this._setModel(attributeBinding.elementBindings[0], $(namedEl));
+                    }
                 }
                 else{
                     this._attributeBindings[name].elementBindings.push({attributeBinding: this._attributeBindings[name], boundEls: [namedEl]});
@@ -290,7 +293,7 @@
             if(el.attr('type')){
                 switch (el.attr('type')) {
                     case 'radio':
-                        if (el.val() === convertedValue) {
+                        if (el.attr('value') === convertedValue) {
                             el.attr('checked', 'checked');
                         }
                         break;
@@ -303,7 +306,7 @@
                         }
                         break;
                     default:
-                        el.val(convertedValue);
+                        $(el).val(convertedValue);
                 }
             }
             else if(el.is('input') || el.is('select') || el.is('textarea')){
@@ -401,7 +404,7 @@
             attributeName = $(foundEl).attr(attributeType);
 
             if(!bindings[attributeName]){
-                var attributeBinding =  {selector: '[' + attributeType + '="' + attributeName + '"]'};
+                var attributeBinding =  {selector: '[' + attributeType + '=' + attributeName + ']'};
                 bindings[attributeName] = attributeBinding;
 
                 if(converter){
